@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RENOBLE — site in development</title>
+<meta name="description" content="Renoble is an agency. Our new site is on its way — leave your email and we'll tell you when it's live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0C0C;
+    --fg:#EDEDE9;
+    --muted:#74767A;
+    --placeholder:#5A5C60;
+    --line:#2f3133;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg)}
+  body{
+    font-family:Inter,"Inter Placeholder",sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    color:var(--fg);
+  }
+  p{margin:0}
+  .page{
+    min-height:100vh;min-height:100dvh;
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+    padding:26px 26px 58px;overflow:hidden;
+  }
+  .top{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .top p{font-size:12px;font-weight:500;line-height:1.2;color:var(--muted)}
+  .center{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px}
+  .hero{position:relative;width:100%;height:340px;overflow:hidden}
+  .ticker{
+    position:absolute;left:0;right:0;top:70px;height:240px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 8%,#000 92%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0%,#000 8%,#000 92%,transparent 100%);
+  }
+  .track{display:flex;gap:10px;width:max-content;animation:roll 70s linear infinite}
+  .track img{width:420px;height:240px;object-fit:cover;flex:none;display:block;filter:brightness(.58) saturate(.9) contrast(1.05)}
+  @keyframes roll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+  .dots{position:absolute;inset:0}
+  .dots canvas{position:absolute;inset:0;width:100%;height:100%;display:block;filter:drop-shadow(0 0 3px rgba(0,0,0,.65))}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .msg{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+  .status{display:flex;align-items:center;gap:9px}
+  .live{width:6px;height:6px;border-radius:50%;background:var(--fg)}
+  .status p{font-size:11px;font-weight:600;letter-spacing:.22em;line-height:1.2;color:var(--fg)}
+  .note p{font-size:15px;font-weight:400;line-height:1.55;color:#fff}
+  .bottom{width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+  .bottom h3{margin:0 0 6px;font-size:12px;font-weight:600;letter-spacing:.02em;line-height:1.2;color:var(--fg)}
+  .bottom .col p{font-size:13px;font-weight:400;line-height:1.6;color:var(--muted)}
+  .bottom .col a{color:inherit;text-decoration:none}
+  .col.right{text-align:right}
+  form{width:260px;display:flex;align-items:center;gap:0;border-bottom:1px solid var(--line);padding-bottom:6px}
+  form input{
+    flex:1;min-width:0;background:none;border:0;outline:0;padding:0;
+    font:400 14px/1.2 Inter,sans-serif;color:var(--fg);
+  }
+  form input::placeholder{color:var(--placeholder)}
+  form button{
+    background:none;border:0;padding:0;cursor:pointer;
+    font:600 13px/1.2 Inter,sans-serif;color:var(--fg);margin-left:0;
+  }
+  form button:hover{opacity:.7}
+  form .state{display:none;align-items:center;gap:10px;width:100%;font:400 14px/1.2 Inter,sans-serif;color:var(--fg);min-height:17px}
+  form.busy input,form.busy button,form.done input,form.done button{display:none}
+  form.busy .state,form.done .state{display:flex}
+  .spin{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--fg);border-radius:50%;animation:spin .7s linear infinite;flex:none}
+  form.done .spin{display:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (max-width:809px){
+    .hero{height:220px}
+    .ticker{top:30px;height:160px}
+    .track img{width:280px;height:160px}
+    .bottom{flex-direction:column;align-items:center;gap:28px;text-align:center}
+    .col.right{text-align:center}
+    .top{flex-direction:column;align-items:flex-start;gap:6px}
+  }
+  @media (prefers-reduced-motion:reduce){.track{animation:none}}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="top">
+    <p>RENOBLE — creative agency</p>
+    <p id="countdown" style="font-variant-numeric:tabular-nums">Live in --d --h --m --s</p>
+  </div>
+
+  <div class="center">
+    <div class="hero">
+      <div class="ticker">
+        <div class="track" id="track"></div>
+      </div>
+      <div class="dots" id="dots">
+        <canvas aria-hidden="true"></canvas>
+        <span class="sr">RENOBLE</span>
+      </div>
+    </div>
+
+    <div class="msg">
+      <div class="status"><span class="live"></span><p>COMING SOON</p></div>
+      <div class="note">
+        <p>Something new is coming to renoble.agency.</p>
+        <p>We are open for new projects, say hello.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="col">
+      <h3>STUDIO</h3>
+      <p>Mumbai, India</p>
+      <p>Working with brands worldwide</p>
+    </div>
+
+    <form id="signup" autocomplete="off">
+      <input type="email" name="email" placeholder="Email me at launch" required>
+      <button type="submit">Send</button>
+      <div class="state" aria-live="polite"><span class="spin"></span><span class="txt">Sending...</span></div>
+    </form>
+
+    <div class="col right">
+      <h3>CONTACT</h3>
+      <p><a href="tel:+918928862682">+91 89288 62682</a></p>
+      <p><a href="mailto:hello@renoble.agency">hello@renoble.agency</a></p>
+    </div>
+  </div>
+</main>
+
+<script>
+// ticker images (6 slides, duplicated for a seamless loop)
+(function(){
+  var imgs=[
+    "https://framerusercontent.com/images/kuIWmP38dNrVpOyLArfbDTHG9rQ.png",
+    "https://framerusercontent.com/images/h6VmkzTgEfKVkuBXkvYGZ1y5HU.png",
+    "https://framerusercontent.com/images/YpIabHiv9N6eE983l5O058jKSg.png",
+    "https://framerusercontent.com/images/ofA61cb9TeXgoC9dBXB1Ge7Hbs.png",
+    "https://framerusercontent.com/images/y6BnALCh9nZGxhsQPW8m3VSBY5I.jpg",
+    "https://framerusercontent.com/images/FrvMy2OkpKcSHeMofJlUQV6JHxs.png"
+  ];
+  var t=document.getElementById('track'),h='';
+  for(var r=0;r<2;r++)imgs.forEach(function(s){h+='<img src="'+s+'" alt="" draggable="false">'});
+  t.innerHTML=h;
+})();
+
+// kinetic dot wordmark
+(function(){
+  var WORD="RENOBLE", FIT=92, STEP=9, SIZE=4.2, BREATHE=5, COLOR="#EDEDE9", WEIGHT=900, FAMILY="Inter, sans-serif";
+  var root=document.getElementById('dots'), cv=root.querySelector('canvas'), ctx=cv.getContext('2d');
+  var pts=[], dim={w:0,h:0}, ptr={x:-9999,y:-9999,on:false}, t=0;
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function build(){
+    var rect=root.getBoundingClientRect();
+    var w=Math.max(1,Math.round(root.offsetWidth||rect.width||1200));
+    var h=Math.max(1,Math.round(root.offsetHeight||rect.height||400));
+    var dpr=Math.min(2,devicePixelRatio||1);
+    dim={w:w,h:h};
+    cv.width=w*dpr;cv.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    var off=document.createElement('canvas');off.width=w;off.height=h;
+    var o=off.getContext('2d');
+    var lines=String(WORD).split('\n').map(function(s){return s.trim()}).filter(Boolean);
+    if(!lines.length){pts=[];return}
+    var lh=.92, fs=h*.92/(lines.length*lh);
+    o.font=WEIGHT+' '+fs+'px '+FAMILY;
+    var maxW=lines.reduce(function(m,l){return Math.max(m,o.measureText(l).width)},1);
+    var target=w*FIT/100;
+    if(maxW>target)fs=target/maxW*fs;
+    o.font=WEIGHT+' '+fs+'px '+FAMILY;
+    o.fillStyle='#fff';o.textAlign='center';o.textBaseline='alphabetic';
+    var ms=lines.map(function(l){return o.measureText(l)});
+    var asc=Math.max.apply(null,ms.map(function(m){return m.actualBoundingBoxAscent||fs*.72}));
+    var desc=Math.max.apply(null,ms.map(function(m){return m.actualBoundingBoxDescent||0}));
+    var lineH=fs*lh, total=(lines.length-1)*lineH+asc+desc, y0=h/2-total/2+asc;
+    lines.forEach(function(l,i){o.fillText(l,w/2,y0+i*lineH)});
+    var d=o.getImageData(0,0,w,h).data, a=Math.max(4,STEP), out=[];
+    for(var y=a;y<h-a*.5;y+=a)for(var x=a;x<w-a*.5;x+=a){
+      if(d[(Math.round(y)*w+Math.round(x))*4+3]>128)out.push({x:x,y:y});
+    }
+    pts=out;
+  }
+
+  function draw(){
+    var w=dim.w,h=dim.h;if(!w||!h)return;
+    ctx.clearRect(0,0,w,h);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];
+      var n=Math.sin(p.x*.006+t)*Math.cos(p.y*.008-t*.7);
+      var dx=n*BREATHE, dy=Math.cos(p.x*.004-t*.8)*BREATHE;
+      if(ptr.on){
+        var ex=p.x-ptr.x, ey=p.y-ptr.y, d2=ex*ex+ey*ey;
+        if(d2<32000){
+          var f=(1-d2/32000)*34, m=Math.sqrt(d2)||1;
+          dx+=ex/m*f;dy+=ey/m*f;
+        }
+      }
+      var s=SIZE+n*.9;
+      ctx.globalAlpha=.94+n*.06;ctx.fillStyle=COLOR;
+      ctx.beginPath();ctx.arc(p.x+dx,p.y+dy,s/2,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  function loop(){t+=.008;draw();requestAnimationFrame(loop)}
+  function start(){
+    build();draw();
+    if(!reduced)loop();
+    new ResizeObserver(function(){build();draw()}).observe(root);
+    if(!reduced){
+      root.addEventListener('pointermove',function(e){
+        var r=root.getBoundingClientRect();
+        var sx=r.width?root.offsetWidth/r.width:1, sy=r.height?root.offsetHeight/r.height:1;
+        ptr={x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy,on:true};
+      });
+      root.addEventListener('pointerleave',function(){ptr.on=false});
+    }
+  }
+  (document.fonts&&document.fonts.load?document.fonts.load('900 100px Inter'):Promise.resolve()).then(start,start);
+})();
+
+// launch countdown (change LAUNCH to your real date; +05:30 = IST)
+(function(){
+  var LAUNCH=new Date('2026-10-19T10:00:00+05:30').getTime(), el=document.getElementById('countdown');
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    var d=LAUNCH-Date.now();
+    if(d<=0){el.textContent='We are live';return}
+    var s=Math.floor(d/1000);
+    el.textContent='Live in '+Math.floor(s/86400)+'d '+pad(Math.floor(s%86400/3600))+'h '+pad(Math.floor(s%3600/60))+'m '+pad(s%60)+'s';
+  }
+  tick();setInterval(tick,1000);
+})();
+
+// email signup -> Google Sheet (paste your Apps Script Web App URL below)
+var SHEET_URL='https://script.google.com/macros/s/AKfycbyzJY2YY0r9riu59jy9DQLyaC3PqCi1aUsj7kKbBdKsEd-VUd-kWNuzZrSkSb0FbwAu/exec';
+document.getElementById('signup').addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=e.target,i=f.querySelector('input'),txt=f.querySelector('.txt'),email=i.value.trim();
+  var reset=function(){f.classList.remove('busy','done');i.value='';i.focus()};
+  f.classList.add('busy');txt.textContent='Sending...';
+  var t0=Date.now();
+  var finish=function(ok){
+    var wait=Math.max(0,1200-(Date.now()-t0));   // loader shows at least 1.2s
+    setTimeout(function(){
+      f.classList.remove('busy');f.classList.add('done');
+      txt.textContent=ok?"Thanks, we'll be in touch.":'Something went wrong. Try again.';
+      setTimeout(reset,2500);                    // then show the input again
+    },wait);
+  };
+  if(!SHEET_URL){finish(false);return}
+  fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams({email:email,page:location.href})})
+    .then(function(){finish(true)},function(){finish(false)});
+});
+</script>
+</body>
+</html>
