@@ -1,3 +1,5 @@
+import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+
 (function () {
   "use strict";
 
@@ -7,7 +9,7 @@
 
   function init() {
     var container = document.getElementById("hero-cylinder");
-    if (!container || typeof THREE === "undefined") {
+    if (!container) {
       notifyReady();
       return;
     }
