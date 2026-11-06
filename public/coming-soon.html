@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>renoble — something is arriving</title>
+<meta name="description" content="Something is arriving. renoble." />
+<style>
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --fg-dim: rgba(255, 255, 255, 0.55);
+    --fg-faint: rgba(255, 255, 255, 0.28);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--fg);
+  }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  canvas#sphere {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 0;
+    transition: opacity 2.2s ease;
+  }
+
+  canvas#sphere.visible { opacity: 1; }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+    padding: 24px;
+    max-width: 560px;
+  }
+
+  .logo {
+    width: 160px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 1.6s ease, transform 1.6s ease;
+  }
+
+  .logo.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .tagline {
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  .tagline.visible { opacity: 1; }
+
+  .copy {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--fg-dim);
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 1.6s ease, transform 1.6s ease;
+  }
+
+  .copy.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .soon {
+    margin-top: 8px;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--fg);
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  .soon.visible { opacity: 1; }
+
+  .soon::after {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 10px;
+    border-radius: 50%;
+    background: var(--fg);
+    animation: pulse 1.8s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.25; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  footer {
+    position: absolute;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-faint);
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+
+  footer.visible { opacity: 1; }
+
+  footer a {
+    color: var(--fg-dim);
+    text-decoration: none;
+  }
+
+  footer a:hover { color: var(--fg); }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <canvas id="sphere"></canvas>
+    <div class="content">
+      <img class="logo" src="/assets/images/logos/logo-white.svg" alt="renoble" />
+      <p class="tagline">Something is arriving</p>
+      <p class="copy">
+        For a while now, quietly, something has been taking shape —
+        built for the ones who build, who ship, who run their own
+        path without anyone handing them a map. Not loud. Not rushed.
+        Just considered, down to the smallest detail.
+      </p>
+      <p class="soon">Soon, it opens</p>
+    </div>
+  </div>
+  <footer>renoble.agency</footer>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById("sphere");
+      var ctx = canvas.getContext("2d");
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W, H, cx, cy, radius;
+      var particles = [];
+      var count = 1400;
+      var rotation = 0;
+
+      function resize() {
+        W = canvas.width = window.innerWidth * dpr;
+        H = canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + "px";
+        canvas.style.height = window.innerHeight + "px";
+        cx = W / 2;
+        cy = H / 2.1;
+        radius = Math.min(W, H) * 0.42;
+      }
+
+      function seed() {
+        particles = [];
+        for (var i = 0; i < count; i++) {
+          var u = Math.random();
+          var v = Math.random();
+          var theta = 2 * Math.PI * u;
+          var phi = Math.acos(2 * v - 1);
+          particles.push({
+            theta: theta,
+            phi: phi,
+            r: radius * (0.92 + Math.random() * 0.1),
+            size: Math.random() * 1.4 + 0.3,
+            drift: Math.random() * 0.4,
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        rotation += 0.0018;
+
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          var theta = p.theta + rotation;
+          var x = p.r * Math.sin(p.phi) * Math.cos(theta);
+          var y = p.r * Math.cos(p.phi);
+          var z = p.r * Math.sin(p.phi) * Math.sin(theta);
+
+          var scale = (z + radius) / (radius * 2);
+          var px = cx + x;
+          var py = cy + y * 0.98 + (H * 0.02);
+          var alpha = 0.15 + scale * 0.55;
+          var size = p.size * (0.5 + scale * 0.9) * dpr;
+
+          ctx.beginPath();
+          ctx.fillStyle = "rgba(255,255,255," + alpha.toFixed(3) + ")";
+          ctx.arc(px, py, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      seed();
+      window.addEventListener("resize", function () {
+        resize();
+        seed();
+      });
+      draw();
+
+      setTimeout(function () {
+        canvas.classList.add("visible");
+      }, 150);
+    })();
+
+    var steps = [
+      [".logo", 500],
+      [".tagline", 1100],
+      [".copy", 1500],
+      [".soon", 2200],
+      ["footer", 2500],
+    ];
+    steps.forEach(function (s) {
+      setTimeout(function () {
+        document.querySelectorAll(s[0]).forEach(function (el) {
+          el.classList.add("visible");
+        });
+      }, s[1]);
+    });
+  </script>
+</body>
+</html>
